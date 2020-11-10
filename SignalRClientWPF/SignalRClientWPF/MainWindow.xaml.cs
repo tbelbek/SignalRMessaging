@@ -122,5 +122,10 @@ namespace SignalRClientWPF
 
             base.OnStateChanged(e);
         }
+
+        private void RichTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
 }

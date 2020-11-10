@@ -15,7 +15,7 @@ namespace MSExampleSignalR
             // use http://*:8080 to bind to all addresses. 
             // See http://msdn.microsoft.com/en-us/library/system.net.httplistener.aspx 
             // for more information.
-            string url = "http://tbelbek.com:8092";
+            string url = "http://*:8092";
             using (WebApp.Start(url))
             {
                 Console.WriteLine("Server running on {0}", url);

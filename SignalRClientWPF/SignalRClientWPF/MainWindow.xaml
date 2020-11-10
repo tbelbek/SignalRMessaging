@@ -16,10 +16,10 @@
             <ColumnDefinition Width="Auto" MinWidth="149" />
         </Grid.ColumnDefinitions>
 
-        <Label Content="Mesaj:" Grid.Column="0" Grid.Row="0" Margin="5" />
-        <TextBox Width="Auto" Grid.Column="1" Grid.Row="0" Margin="10,5" x:Name="MessageTextBox" KeyDown="ActionMessageTextBoxOnKeyDown" FontSize="18" Grid.ColumnSpan="2" />
-        <Button Content="Gönder" Grid.Column="3" Grid.Row="0" Margin="17,5" x:Name="SendButton" Click="ActionSendButtonClick" />
+        <Label Content="Mesaj:" Grid.Column="0" Grid.Row="0" Margin="5,5,4.8,289.8" Grid.RowSpan="4" />
+        <TextBox Width="Auto" Grid.Column="1" Grid.Row="0" Margin="10.2,5,9.6,248.8" x:Name="MessageTextBox" TextWrapping="Wrap" AcceptsReturn="True" KeyDown="ActionMessageTextBoxOnKeyDown" FontSize="18" Grid.ColumnSpan="2" Grid.RowSpan="4" />
+        <Button Content="Gönder" Grid.Column="3" Grid.Row="0" Margin="10.4,5,10.4,248.8" x:Name="SendButton" Click="ActionSendButtonClick" Grid.RowSpan="4" />
 
-        <ListBox Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="4" Margin="5" x:Name="MessagesListBox" FontSize="18" FontWeight="Bold" />
+        <ListBox Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="4" Margin="5,77,5.4,4.8" x:Name="MessagesListBox" FontSize="18" FontWeight="Bold" />
     </Grid>
 </Window>
