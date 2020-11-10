@@ -18,12 +18,13 @@ namespace SignalRClientWPF
     public partial class MainWindow : Window
     {
         public System.Threading.Thread Thread { get; set; }
-        public string Host = "http://localhost:8089/";
 
-        public string UserName = ConfigurationManager.AppSettings["UserName"].ToString();
+        public string Host = ConfigurationManager.AppSettings["ServerUrl"];
 
+        public string UserName = ConfigurationManager.AppSettings["UserName"];
 
         public IHubProxy Proxy { get; set; }
+
         public HubConnection Connection { get; set; }
 
         public bool Active { get; set; }
