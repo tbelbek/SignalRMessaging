@@ -8,6 +8,8 @@ using Microsoft.AspNet.SignalR.Client;
 using Microsoft.AspNet.SignalR.Client.Hubs;
 using SignalRClientWPF.Dto;
 
+using System.Configuration;
+
 namespace SignalRClientWPF
 {
     /// <summary>
@@ -18,6 +20,9 @@ namespace SignalRClientWPF
         public System.Threading.Thread Thread { get; set; }
         public string Host = "http://localhost:8089/";
 
+        public string UserName = ConfigurationManager.AppSettings["UserName"].ToString();
+
+
         public IHubProxy Proxy { get; set; }
         public HubConnection Connection { get; set; }
 
@@ -26,6 +31,15 @@ namespace SignalRClientWPF
         public MainWindow()
         {
             InitializeComponent();
+
+            System.Windows.Forms.NotifyIcon ni = new System.Windows.Forms.NotifyIcon();
+            ni.Icon = new System.Drawing.Icon("image.ico");
+            ni.Visible = true;
+            ni.DoubleClick += delegate (object sender, EventArgs args)
+                {
+                    this.Show();
+                    this.WindowState = WindowState.Normal;
+                };
         }
 
 
@@ -42,11 +56,11 @@ namespace SignalRClientWPF
         private async void ActionSendObjectButtonClick(object sender, RoutedEventArgs e)
         {
             await SendMessage();
-        }     
+        }
 
         private async Task SendMessage()
         {
-            await Proxy.Invoke("Addmessage", ClientNameTextBox.Text , MessageTextBox.Text);
+            await Proxy.Invoke("Addmessage", UserName, MessageTextBox.Text);
         }
 
         private async Task SendHeartbeat()
@@ -54,11 +68,6 @@ namespace SignalRClientWPF
             await Proxy.Invoke("Heartbeat");
         }
 
-        private async Task SendHelloObject()
-        {
-            HelloModel hello = new HelloModel { Age = Convert.ToInt32(HelloTextBox.Text), Molly = HelloMollyTextBox.Text };
-            await Proxy.Invoke("sendHelloObject", hello);
-        }
 
         private async void ActionWindowLoaded(object sender, RoutedEventArgs e)
         {
@@ -68,9 +77,8 @@ namespace SignalRClientWPF
                 Connection = new HubConnection(Host);
                 Proxy = Connection.CreateHubProxy("MyHub");
 
-                Proxy.On<string, string>("addmessage", (name, message) => OnSendData("Recieved addMessage: " + name + ": " + message ));
+                Proxy.On<string, string>("addmessage", (name, message) => OnSendData($"{name}:{message}"));
                 Proxy.On("heartbeat", () => OnSendData("Recieved heartbeat"));
-                Proxy.On<HelloModel>("sendHelloObject", hello => OnSendData("Recieved sendHelloObject " + hello.Molly +  " " + hello.Age));
 
                 Connection.Start();
 
@@ -78,7 +86,8 @@ namespace SignalRClientWPF
                 {
                     System.Threading.Thread.Sleep(10);
                 }
-            }) { IsBackground = true };
+            })
+            { IsBackground = true };
             Thread.Start();
 
         }
@@ -86,6 +95,14 @@ namespace SignalRClientWPF
         private void OnSendData(string message)
         {
             Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => MessagesListBox.Items.Insert(0, message)));
+            Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+                                                                         {
+                                                                             this.Show();
+                                                                             if (this.WindowState
+                                                                                 == WindowState.Minimized)
+                                                                                 this.WindowState =
+                                                                                     WindowState.Normal;
+                                                                         }));
         }
 
         private async void ActionMessageTextBoxOnKeyDown(object sender, KeyEventArgs e)
@@ -95,6 +112,14 @@ namespace SignalRClientWPF
                 await SendMessage();
                 MessageTextBox.Text = "";
             }
+        }
+
+        protected override void OnStateChanged(EventArgs e)
+        {
+            if (WindowState == System.Windows.WindowState.Minimized)
+                this.Hide();
+
+            base.OnStateChanged(e);
         }
     }
 }
